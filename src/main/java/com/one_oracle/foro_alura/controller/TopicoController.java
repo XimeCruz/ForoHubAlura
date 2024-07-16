@@ -66,4 +66,14 @@ public class TopicoController {
         }
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> eliminarTopico(@PathVariable Long id) {
+        try {
+            topicoService.eliminarTopico(id);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
 }

@@ -79,4 +79,12 @@ public class TopicoService {
 
         return topicoRepository.save(topico);
     }
+
+    public void eliminarTopico(Long id) {
+        if (!topicoRepository.existsById(id)) {
+            throw new RuntimeException("El tópico no existe.");
+        }
+        topicoRepository.deleteById(id);
+    }
+
 }
