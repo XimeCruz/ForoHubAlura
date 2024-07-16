@@ -23,5 +23,9 @@ public class TopicoRequest {
     @NotNull
     private Long cursoId;
 
+    @NotNull
+    @NotEmpty
+    private String status;
+
 }
 

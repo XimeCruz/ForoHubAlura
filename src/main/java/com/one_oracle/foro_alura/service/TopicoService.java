@@ -27,14 +27,23 @@ public class TopicoService {
     @Autowired
     private CursoRepository cursoRepository;
 
-    public Topico crearTopico(TopicoRequest topicoRequest) {
+    public Page<Topico> listarTopicos(Pageable pageable) {
+        return topicoRepository.findAll(pageable);
+    }
 
-        // Verificar si el tópico ya existe
+    public Page<Topico> listarTopicosPorCursoYAnio(String nombreCurso, int anio, Pageable pageable) {
+        return topicoRepository.findByCursoNombreAndAnio(nombreCurso, anio, pageable);
+    }
+
+    public Optional<Topico> obtenerTopicoPorId(Long id) {
+        return topicoRepository.findById(id);
+    }
+
+    public Topico crearTopico(TopicoRequest topicoRequest) {
         if (topicoRepository.existsByTituloAndMensaje(topicoRequest.getTitulo(), topicoRequest.getMensaje())) {
             throw new RuntimeException("El tópico con el mismo título y mensaje ya existe.");
         }
 
-        // Verificar que el autor y el curso existen
         Usuario autor = usuarioRepository.findById(topicoRequest.getAutorId())
                 .orElseThrow(() -> new RuntimeException("El autor no existe."));
 
@@ -52,15 +61,22 @@ public class TopicoService {
         return topicoRepository.save(nuevoTopico);
     }
 
-    public Page<Topico> listarTopicos(Pageable pageable) {
-        return topicoRepository.findAll(pageable);
-    }
+    public Topico actualizarTopico(Long id, TopicoRequest topicoRequest) {
+        Topico topico = topicoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("El tópico no existe."));
 
-    public Page<Topico> listarTopicosPorCursoYAnio(String nombreCurso, int anio, Pageable pageable) {
-        return topicoRepository.findByCursoNombreAndAnio(nombreCurso, anio, pageable);
-    }
+        Usuario autor = usuarioRepository.findById(topicoRequest.getAutorId())
+                .orElseThrow(() -> new RuntimeException("El autor no existe."));
 
-     public Optional<Topico> obtenerTopicoPorId(Long id) {
-        return topicoRepository.findById(id);
+        Curso curso = cursoRepository.findById(topicoRequest.getCursoId())
+                .orElseThrow(() -> new RuntimeException("El curso no existe."));
+
+        topico.setTitulo(topicoRequest.getTitulo());
+        topico.setMensaje(topicoRequest.getMensaje());
+        topico.setAutor(autor);
+        topico.setCurso(curso);
+        topico.setStatus(topicoRequest.getStatus());
+
+        return topicoRepository.save(topico);
     }
 }

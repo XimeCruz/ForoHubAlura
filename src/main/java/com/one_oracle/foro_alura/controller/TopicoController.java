@@ -23,16 +23,6 @@ public class TopicoController {
     @Autowired
     private TopicoService topicoService;
 
-    @PostMapping
-    public ResponseEntity<?> crearTopico(@RequestBody @Valid TopicoRequest topicoRequest) {
-        try {
-            Topico topicoGuardado = topicoService.crearTopico(topicoRequest);
-            return ResponseEntity.status(HttpStatus.CREATED).body(topicoGuardado);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
-    }
-
     @GetMapping
     public ResponseEntity<Page<Topico>> listarTopicos(
             @PageableDefault(sort = "fechaCreacion", direction = Sort.Direction.ASC, size = 10) Pageable pageable) {
@@ -56,5 +46,24 @@ public class TopicoController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @PostMapping
+    public ResponseEntity<?> crearTopico(@RequestBody @Valid TopicoRequest topicoRequest) {
+        try {
+            Topico topicoGuardado = topicoService.crearTopico(topicoRequest);
+            return ResponseEntity.status(HttpStatus.CREATED).body(topicoGuardado);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> actualizarTopico(@PathVariable Long id, @RequestBody @Valid TopicoRequest topicoRequest) {
+        try {
+            Topico topicoActualizado = topicoService.actualizarTopico(id, topicoRequest);
+            return ResponseEntity.ok(topicoActualizado);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
 
 }
