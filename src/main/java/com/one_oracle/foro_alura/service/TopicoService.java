@@ -8,6 +8,8 @@ import com.one_oracle.foro_alura.repository.CursoRepository;
 import com.one_oracle.foro_alura.repository.TopicoRepository;
 import com.one_oracle.foro_alura.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -47,5 +49,13 @@ public class TopicoService {
         nuevoTopico.setFechaCreacion(LocalDateTime.now());
 
         return topicoRepository.save(nuevoTopico);
+    }
+
+    public Page<Topico> listarTopicos(Pageable pageable) {
+        return topicoRepository.findAll(pageable);
+    }
+
+    public Page<Topico> listarTopicosPorCursoYAnio(String nombreCurso, int anio, Pageable pageable) {
+        return topicoRepository.findByCursoNombreAndAnio(nombreCurso, anio, pageable);
     }
 }
