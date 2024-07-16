@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 
 @RestController
 @RequestMapping("/topicos")
@@ -46,4 +48,13 @@ public class TopicoController {
         Page<Topico> topicos = topicoService.listarTopicosPorCursoYAnio(nombreCurso, anio, pageable);
         return ResponseEntity.ok(topicos);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Topico> obtenerTopicoPorId(@PathVariable Long id) {
+        Optional<Topico> topico = topicoService.obtenerTopicoPorId(id);
+        return topico.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+
 }

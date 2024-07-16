@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class TopicoService {
@@ -57,5 +58,9 @@ public class TopicoService {
 
     public Page<Topico> listarTopicosPorCursoYAnio(String nombreCurso, int anio, Pageable pageable) {
         return topicoRepository.findByCursoNombreAndAnio(nombreCurso, anio, pageable);
+    }
+
+     public Optional<Topico> obtenerTopicoPorId(Long id) {
+        return topicoRepository.findById(id);
     }
 }
